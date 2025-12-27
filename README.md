@@ -1,399 +1,208 @@
-# %% [markdown]
-#             imports
+# 🌸 Iris Dataset – Exploratory Data Analysis & Preprocessing
 
-# %%
-import pandas as pd 
+## 1. Objective
+The goal of this notebook is to explore and understand the Iris dataset by:
+- Inspecting data structure and quality
+- Checking missing and duplicate values
+- Performing basic statistical analysis
+- Visualizing feature distributions
+- Preparing the dataset for further analysis or modeling
+
+This notebook focuses on **data understanding**, not machine learning models.
+
+---
+
+## 2. Dataset Description
+
+The Iris dataset is a well-known dataset used for classification and statistical analysis.
+
+### Features
+
+| Column Name     | Description                    |
+|-----------------|--------------------------------|
+| sepal_length    | Sepal length (cm)              |
+| sepal_width     | Sepal width (cm)               |
+| petal_length    | Petal length (cm)              |
+| petal_width     | Petal width (cm)               |
+| species         | Type of iris flower            |
+
+### Target Classes
+- Setosa  
+- Versicolor  
+- Virginica  
+
+---
+
+## 3. Required Libraries
+
+```python
+import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+Purpose
 
-# %%
-# csv reading 
-df = pd.read_csv('iris.csv')
-# showing sample data
-print(df.head())
+pandas → data handling
 
-# %%
-# shape and columns
-print(f"shape : {df.shape}\n")
-print(f"features : {df.columns}")
+numpy → numerical operations
 
-# %%
-# dimension of the dataframe
-print(f"the dataframe is {df.ndim} dimensional")
+matplotlib / seaborn → data visualization
 
-# %%
-# size of the data set
-print(f"size of the data set is {df.size}")
+4. Loading the Dataset
+python
+Copy code
+df = pd.read_csv("iris.csv")
+Initial inspection:
 
-# %%
-# transpose of the data frame    
-transposed_df = df.T
-df.T
+python
+Copy code
+df.head()
+df.shape
+df.info()
+Why this is important
 
+Confirms column names
 
-# %%
-# info of the data set 
-print(f"DATASET INFO \n{df.info()}")
+Checks data types
 
-# %%
-# sample data 
-print(df.sample())
+Verifies number of rows and columns
 
-# %%
-# memory usage of each feature
-print(f"\nmemory usage of each feature : \n{df.memory_usage()}")
+5. Data Quality Checks
+5.1 Missing Values
+python
+Copy code
+df.isnull().sum()
+Explanation
 
-# %%
+isnull() identifies missing values
 
+sum() counts missing values per column
 
-# %%
-print(f"DATA TYPES :\n{df.dtypes}")
+✔ Result: No missing values found.
 
-# %%
-# count of null and duplicate values using count that returns total count of rows
-a=df.isnull().count()
-print(f"\nMISSING VALUES :\n{a}")
-b=df.duplicated().count()
-print(f"\nDUPLICATE VALUES : {b}")
+5.2 Duplicate Records
+python
+Copy code
+df.duplicated().sum()
+Explanation
 
-# %%
-# count of null and duplicate values using sum that returns total sum of nulls and duplicates
-a=df.isnull().sum()
-print(f"\nMISSING VALUES :\n{a}")
-b=df.duplicated().sum()
-print(f"\nDUPLICATE VALUES : {b}")
+duplicated() flags repeated rows
 
-# %% [markdown]
-#                                 Core difference of count and sum 
-# 
-# count():-
-# 
-# 👉 Counts rows, NOT problems
-# 
-# sum():-
-# 
-# 👉 Counts actual problems (True values)
+sum() gives the total count of duplicates
 
-# %%
-# describing a data set like mean, min, max, std, percentiles
-print(df.describe())
+Duplicate records can distort analysis and should be removed if present.
 
-# %% [markdown]
-#             mean of individual
+6. Statistical Summary
+python
+Copy code
+df.describe()
+Provides:
 
-# %%
-print(df["sepal_length"].mean())
+Mean
 
-# %%
-print(df["sepal_width"].mean())
+Standard deviation
 
-# %%
-print(df["petal_length"].mean())
+Minimum and maximum values
 
-# %%
-print(df["petal_width"].mean())
+Quartiles (Q1, Median, Q3)
 
-# %% [markdown]
-# max = maximum value ;;;;;;;
-# min = minimum value ;;;;;;;
-# std_dev = Standard Deviation. This tells you how spread out the numbers are. A high std (like 1.76 for petal length) means the sizes vary a lot; a low std (like 0.43 for sepal width) means most flowers are very similar in that category.;;;;;;;
-# here 25% = ist quartile;;;;;;
-# 75% = 3rd quartile ;;;;;;;
-# 50% = median ;;;;;;;;
+Used to understand data spread and detect anomalies.
 
-# %% [markdown]
-# this data set is univariety data set 
-
-# %% [markdown]
-#                     individual skews for different features
-
-# %% [markdown]
-# Interpretation (memorize this):
-# 
-# ≈ 0 → Normal distribution
-# 
-# > +0.5 → Right-skewed (positively skewed)
-# 
-# < -0.5 → Left-skewed (negatively skewed)
-
-# %%
-print(df["sepal_length"].skew())
-
-# %%
-print(df["sepal_width"].skew())
-
-# %%
-print(df["petal_length"].skew())
-
-# %%
-print(df["petal_width"].skew())
-
-# %% [markdown]
-# logical check of skewing using mean and median for column - petal length
-
-# %%
-a=df["petal_length"].mean()#mean of the petal length
-b=df["petal_length"].median()#median of the petal length
-if a > b:
-    print("right skewed")
-elif a < b:
-    print("left skewed")
-else:
-    print("normal distribution")
-print(f"mean : {a}\nmedian : {b}")
-
-# %% [markdown]
-# for petal width
-
-# %%
-a=df["petal_width"].mean()#mean of the petal width
-b=df["petal_width"].median()#median of the petal width
-if a > b:
-    print("right skewed")
-elif a < b:
-    print("left skewed")
-else:
-    print("normal distribution")
-print(f"mean : {a}\nmedian : {b}")
-
-# %% [markdown]
-# for sepal length
-
-# %%
-a=df["sepal_length"].mean()#mean of the sepal length
-b=df["sepal_length"].median()#median of the sepal length
-if a > b:
-    print("right skewed")
-elif a < b:
-    print("left skewed")
-else:
-    print("normal distribution")
-print(f"mean : {a}\nmedian : {b}")
-
-# %% [markdown]
-# for sepal width
-
-# %%
-a=df["sepal_width"].mean()#mean of the sepal width
-b=df["sepal_width"].median()#median of the sepal width
-if a > b:
-    print("right skewed")
-elif a < b:
-    print("left skewed")
-else:
-    print("normal distribution")
-print(f"mean : {a}\nmedian : {b}")
-
-# %%
+7. Species Distribution
+python
+Copy code
 df["species"].value_counts()
+Purpose
 
-# %%
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import norm
+Checks class balance
 
-plt.figure(figsize=(10,6))
+Important for future modeling steps
 
-for species in df["species"].unique():
-    data = df[df["species"] == species]["petal_length"]
-
-    # Histogram (density=True for probability)
-    plt.hist(data, bins=15, density=True, alpha=0.5, label=species)
-    # Gaussian curve
-    mu, sigma = data.mean(), data.std()
-    x = np.linspace(data.min(), data.max(), 100)
-    plt.plot(x, norm.pdf(x, mu, sigma), linewidth=2)
-
-plt.xlabel("Petal Length")
-plt.ylabel("Density")
-plt.title("Petal Length Distribution by Species (True Bell Curves)")
-plt.legend()
-plt.show()
-
-
-# %%
-import matplotlib.pyplot as plt
-plt.boxplot(df["petal_length"])
-plt.show()
-
-
-# %%
-import matplotlib.pyplot as plt
-plt.boxplot(df["petal_width"])
-plt.show()
-
-
-# %%
-import matplotlib.pyplot as plt
-plt.boxplot(df["sepal_length"])
-plt.show()
-
-# %%
-import matplotlib.pyplot as plt
-plt.boxplot(df["sepal_width"])
-plt.show()
-
-
-# %%
-import matplotlib.pyplot as plt
-
-data = df["sepal_width"]   # or the column you used for the box plot
-
-plt.figure(figsize=(12,5))
-
-# Histogram
-plt.subplot(1, 2, 1)
-plt.hist(data, bins=15, edgecolor="black")
-plt.xlabel("sepal Width")
-plt.ylabel("Frequency")
-plt.title("Histogram")
-
-# Box plot
-plt.subplot(1, 2, 2)
-plt.boxplot(data, vert=True)
-plt.ylabel("sepal Width")
-plt.title("Box Plot")
-
-plt.tight_layout()
-plt.show()
-
-
-# %%
-import matplotlib.pyplot as plt
-
+8. Data Visualization
+8.1 Histogram (Distribution Analysis)
+python
+Copy code
 plt.hist(df["petal_length"], bins=20)
 plt.xlabel("Petal Length")
 plt.ylabel("Frequency")
 plt.show()
+Interpretation
 
-# %%
-plt.hist(df["petal_width"], bins=20)
-plt.xlabel("Petal width")
-plt.ylabel("Frequency")
-plt.show()
+Shows how values are distributed
 
+Reveals skewness and gaps
 
-# %%
-plt.hist(df["sepal_length"], bins=20)
-plt.xlabel("sepal Length")
-plt.ylabel("Frequency")
-plt.show()
+Indicates possible class separation
 
+8.2 Box Plot (Outlier Detection)
+python
+Copy code
+sns.boxplot(x=df["sepal_width"])
+What it shows
 
-# %%
-plt.hist(df["sepal_width"], bins=20)
-plt.xlabel("sepal Width")
-plt.ylabel("Frequency")
-# plt.margins(x=0, y=0)
-plt.show()
+Median
 
+Quartiles
 
-# %%
-print(df.head())
+Potential outliers
 
-# %% [markdown]
-# here we understand that petals have 2 groups of the range 1-2 is one group and 3-7 is another group for only petals for sepals all are bell shaped 
+9. Species-wise Visualization
+python
+Copy code
+sns.histplot(data=df, x="petal_length", hue="species", kde=True)
+Purpose
 
-# %%
-# %pip install nbformat
+Compares feature distributions across species
 
-# %%
-import seaborn as sns
-import plotly.express as px
+Helps identify discriminative features
 
-# 1. LOAD THE DATA (This defines 'df')
-df = sns.load_dataset('iris')
-
-# 2. CREATE THE PLOT
-fig = px.scatter(df, 
-                 x="sepal_width", 
-                 y="sepal_length", 
-                 color="species")
-fig.show()
-
-
-# %%
-fig=px.box(df,x="sepal_width")
-fig.show()
-
-# %%
-# data cleaning to remove outliers using IQR method
+10. Outlier Detection Using IQR Method
+python
+Copy code
 Q1 = df["sepal_width"].quantile(0.25)
 Q3 = df["sepal_width"].quantile(0.75)
 IQR = Q3 - Q1
+Filtering valid values:
 
-df_clean = df[
+python
+Copy code
+df_filtered = df[
     (df["sepal_width"] >= Q1 - 1.5 * IQR) &
     (df["sepal_width"] <= Q3 + 1.5 * IQR)
 ]
-fig=px.box(df_clean,x="sepal_width")
-fig.show()
+Why 1.5 × IQR?
+Standard statistical rule
 
-# %%
-# finding the outlier ranges to see which rows have those outlier values
-outliers = df[df["sepal_width"].isin([2, 4.1, 4.2, 4.4])]
-print(outliers)
+Captures most normal data
 
-# %%
-# using the not operation to remove those outlier rows
-df_clean = df[~df["sepal_width"].isin([2, 4.1, 4.2, 4.4])]
-fig=px.box(df_clean,x="sepal_width")
-fig.show()
+Flags extreme values effectively
 
-# %%
-df_clean.head(61)
+11. Key Insights
+Dataset is clean and well-structured
 
-# %%
-print(f"before outliers removed data:\n \n{df.describe()}\n")
-print(f"\nshape of the dataset before removing outliers: {df.shape}\n")
-print(f"outliers removed data:\n \n{df_clean.describe()}")
-print(f"\nshape of the dataset after removing outliers: {df_clean.shape}")
+No missing values
 
-# %%
-# for mean pattern that comparing of mean of cleaned and uncleaned data:
-a=(df_clean["sepal_width"].mean())
-b=(df["sepal_width"].mean())
-if a > b:
-    print("mean increased after removing outliers")
-elif a < b:
-    print("mean decreased after removing outliers")
-else:
-    print("mean remained the same after removing outliers")
+Petal features separate species better than sepal features
 
-# %%
-# for median pattern that comparing of mean of cleaned and uncleaned data:
-a=(df_clean["sepal_width"].median())
-b=(df["sepal_width"].median())
-if a > b:
-    print("median increased after removing outliers")
-elif a < b:
-    print("median decreased after removing outliers")
-else:
-    print("median remained the same after removing outliers")
+Setosa is clearly distinguishable
 
-# %%
-a=(IQR)
-print(a)
+Versicolor and Virginica show partial overlap
 
-# %%
-# for std pattern that comparing of mean of cleaned and uncleaned data:
-a=(df_clean["sepal_width"].std())
-b=(df["sepal_width"].std())
-if a > b:
-    print("std increased after removing outliers")
-elif a < b:
-    print("std decreased after removing outliers")
-else:
-    print("std remained the same after removing outliers")
+12. Conclusion
+This analysis:
 
-# %%
-# for std pattern that comparing of mean of cleaned and uncleaned data:
-a=(df_clean["sepal_width"].25%)
-b=(df["sepal_width"].25%)
-if a > b:
-    print("std increased after removing outliers")
-elif a < b:
-    print("std decreased after removing outliers")
-else:
-    print("std remained the same after removing outliers")
+Validates dataset quality
 
+Explores feature distributions
 
+Identifies patterns and relationships
+
+Prepares the data for modeling
+
+Next steps
+
+Feature scaling
+
+Train-test split
+
+Classification models (KNN, SVM, Logistic Regression)
