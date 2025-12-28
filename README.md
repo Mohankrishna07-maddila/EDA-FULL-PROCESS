@@ -109,9 +109,10 @@ are considered outliers.
 ## Conclusion
 This exploratory analysis validates the quality of the Iris dataset and reveals meaningful patterns in feature behavior and class separation. The dataset is well-suited for further preprocessing and machine learning applications.
 
+## Problem in Visualizations
+- GitHub can't render the lib- "Plotly" cause it is a javascript based lib so please download to see the visualization graphs using plotly or px.something
+
 ### Recommended Next Steps
 - Feature scaling and normalization  
 - Train-test split  
 - Application of classification algorithms such as KNN, SVM, or Logistic Regression
-## Problem in Visualizations
-- GitHub can't render the lib- "Plotly" cause it is a javascript based lib so please download to see the visualization graphs using plotly or px.something
